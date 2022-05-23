@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="us-ascii" ?>
+<marlin xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ilcsoft.desy.de/marlin/marlin.xsd">
+	<constants>
+		<constant name="lcgeo_DIR" value="/cvmfs/ilc.desy.de/sw/x86_64_gcc82_centos7/v02-02-03/lcgeo/v00-16-07" />
+		<constant name="DetectorModel" value="ILD_l5_o1_v02" />
+		<constant name="CompactFile" value="${lcgeo_DIR}/ILD/compact/${DetectorModel}/${DetectorModel}.xml" />
+		<constant name="Verbosity" value="MESSAGE"/>
+	</constants>
+
+	<execute>
+		<processor name="InitDD4hep" condition="" />
+		<processor name="MyTracksViewer"/>
+	</execute>
+
+	<global>
+		<parameter name="LCIOInputFiles">input_DTS.slcio</parameter>
+		<!-- limit the number of processed records (run+evt): -->
+		<parameter name="MaxRecordNumber" value="0" />
+		<parameter name="SkipNEvents" value="0" />
+		<parameter name="SupressCheck" value="false" />
+		<parameter name="GearXMLFile">/cvmfs/ilc.desy.de/sw/ILDConfig/v02-02-03/StandardConfig/production/Gear/gear_ILD_l5_v02.xml</parameter>
+		<parameter name="Verbosity" options="DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT">DEBUG1</parameter>
+		<parameter name="RandomSeed" value="1234567890" />
+		<parameter name="OutputSteeringFile" value="" />
+		<!-- optionally limit the collections that are read from the input file: -->
+		<!--parameter name="LCIOReadCollectionNames">MCParticle PandoraPFOs</parameter-->
+	</global>
+
+	<processor name="InitDD4hep" type="InitializeDD4hep">
+		<!--InitializeDD4hep reads a compact xml file and initializes the DD4hep::LCDD object-->
+		<!--Name of the DD4hep compact xml file to load-->
+		<parameter name="DD4hepXMLFile" type="string">${CompactFile}</parameter>
+	</processor>
+
+	<processor name="MyTracksViewer" type="TracksViewer">
+		<!--Name of Input Reconstrcuted Particle Collection-->
+		<parameter name="RecoParticleCollection" type="string" lcioInType="RECONSTRUCTEDPARTICLE">PandoraPFOs</parameter>
+		<!--Name of the MarlinTrkTracks collection (fitted with pion mass)-->
+		<parameter name="MarlinTrkTracksCollection" type="string" lcioInType="TRACK">MarlinTrkTracks</parameter>
+		<!--Name of the MarlinTrkTracks collection refitted with true mass-->
+		<parameter name="MarlinTrkTracksCollectionRefitted" type="string" lcioInType="TRACK">MarlinTrkTracksKaon</parameter>
+		<!--Name of input TrackMCTruthLink Collection-->
+		<parameter name="TrackMCTruthLinkCollection" type="string" lcioInType="LCRELATION">MarlinTrkTracksMCTruthLink</parameter>
+		<!--Name of input MCTruthTrackLink Collection-->
+		<parameter name="MCTruthTrackLinkCollection" type="string" lcioInType="LCRelation">MCTruthMarlinTrkTracksLink</parameter>
+		<!--verbosity level of this processor ("DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT")-->
+		<parameter name="Verbosity" type="string">${Verbosity}</parameter>
+	</processor>
+
+</marlin>

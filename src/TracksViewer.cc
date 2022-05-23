@@ -37,13 +37,13 @@ m_Bfield(0.f)
 					"TrackMCTruthLinkCollection",
 					"Name of input TrackMCTruthLink Collection",
 					m_TrackMCTruthLinkCollection,
-					std::string("TrackMCTruthLink")
+					std::string("MarlinTrkTracksMCTruthLink")
 				);
 	registerInputCollection(	LCIO::LCRELATION,
 					"MCTruthTrackLinkCollection",
 					"Name of input MCTruthTrackLink Collection",
 					m_MCTruthTrackLinkCollection,
-					std::string("MCTruthTrackLink")
+					std::string("MCTruthMarlinTrkTracksLink")
 				);
 
 }
@@ -74,6 +74,7 @@ void TracksViewer::processEvent( EVENT::LCEvent *pLCEvent )
 	DDCEDPickingHandler& pHandler = DDCEDPickingHandler::getInstance();
 	pHandler.update(pLCEvent);
 
+	DDMarlinCED::draw( this , 1); // draw everything
 	LCCollection *ReconstructedParticleCollection{};
 	LCCollection *MarlinTrkTracksCollection{};
 	LCCollection *MarlinTrkTracksRefittedCollection{};
